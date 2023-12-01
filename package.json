@@ -4,7 +4,8 @@
   "description": "Paper-based Secret Sharing Technique",
   "main": "docs/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/Sjlver/psst/issues"
   },
-  "homepage": "https://dev.purpureus.net/psst"
+  "homepage": "https://dev.purpureus.net/psst",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    "prettier": "3.1.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
 }
