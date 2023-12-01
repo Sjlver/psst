@@ -1,0 +1,19 @@
+{
+  "name": "psst",
+  "version": "1.0.0",
+  "description": "Paper-based Secret Sharing Technique",
+  "main": "docs/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sjlver/psst.git"
+  },
+  "author": "Jonas Wagner <ltlygwayh@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sjlver/psst/issues"
+  },
+  "homepage": "https://dev.purpureus.net/psst"
+}
