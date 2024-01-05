@@ -220,6 +220,15 @@ and paper, like `psst`. The main difference is that it only supports _n_-of-_n_
 schemes, for example 2-of-2. If even one share is lost, the secret cannot be
 recovered.
 
+BIP-39 Split Mnemonic is a simple 2-of-3 scheme implemented in
+[Ian Coleman's BIP-39 tool](https://iancoleman.io/bip39/). It generates three
+shares, each containing two thirds of the words in the seed phrase. The sets of
+words overlap, so that any two shares contain the full phrase. Split Mnemonics
+are much simpler to use than `psst`. On the other hand, each share only has a
+third of the entropy of the full seed. For short seeds (e.g., 12 words), this is
+only 42 bits, so the full seed can be brute-forced in relatively little time.
+For 24-word seeds, the brute-force approach is prohibitively expensive.
+
 For many use cases, it is better to avoid secret sharing altogether. For
 example, to securely store cryptocurrency, a multisig scheme has advantages. For
 a detailed discussion, refer to
