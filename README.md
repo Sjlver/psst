@@ -1,45 +1,47 @@
 # psst: Paper-based Secret Sharing Technique
 
-`psst` is a system for storing secrets in a secure way. `psst` helps the user to
-split a secret into up to four parts. Each part in isolation reveals nothing
-about the secret (except its length). Any two parts combined allow the secret to
-be restored.
+`psst` is a system for storing secrets without a single point of failure. `psst`
+helps the user to split a secret into up to four parts. Each part in isolation
+reveals nothing about the secret (except its length). Any two parts combined
+allow the secret to be restored.
 
 The main goal of `psst` is simplicity. It is a system that can be used with just
-pen, paper and a six-sided casino dice.
+pen, paper and a six-sided dice.
 
-`psst` is a restricted case of Shamir's Secret Sharing, operating in GF(5) with
-a threshold of two. See the [Rationale](#rationale) section below for more
-information about that choice.
+`psst` is a restricted case of
+[Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing),
+operating in GF(5) with a threshold of two. See the
+[Design Choices](#design-choices) section below for more information about that
+choice.
 
 ## How to use `psst`?
 
-1. Download the [`psst` PDF (A4 paper)](TODO).
+1. Download the [`psst` PDF (A4 paper)](docs/psst-worksheet.pdf).
 2. Print the PDF.
-3. Grab a pen and a high-quality dice.
-4. Follow the instructions on the printed PDF.
+3. Follow the instructions on the printed PDF.
 
-## Why to use `psst`?
+## Motivation
 
-- It's fun. You may officially call yourself a geek if you use it.
+### Why use `psst`?
+
+- It's fun. You may officially
+  [call yourself a geek](https://phdcomics.com/comics/archive.php?comicid=25) if
+  you use it.
 - You might learn something about finite fields and information theory :)
 - That's all there is, really. Please don't use `psst` if you don't find it fun,
   or if you need a secure, tried, certified, compliant, or peer-reviewed system.
 
-## Rationale
+### The fundamental trade-off between security and availability
 
-### Use cases for `psst`
+The most common way to store secrets like BIP-39 seed phrases is to make a paper
+copy. This provides a basic level of _security_ and _availability_:
 
-Before using `psst`, the authors had paper copies of various important secrets,
-such as cryptographic seeds used by cryptocurrency wallets, and master
-passwords. This provides a basic level of _security_ and _availability_:
-
-- **Security:** Malicious people need to know where the secret is stored, and
-  get physical access to it. Users can improve security by hiding the secret,
-  putting it in a bank vault, and similar techniques.
+- **Security:** Malicious actors who want to steal the secret need to know where
+  it is stored, and get physical access to it. Users can improve security by
+  hiding the secret, putting it in a bank vault, and similar techniques.
 - **Availability:** The secret is backed up. Users can improve availability by
   creating multiple copies. They can make copies highly durable, for example by
-  embossing the secret in a metal plate.
+  engraving the secret in a metal plate.
 
 Users face various trade-offs between security and availability. For example,
 hiding a secret can improve security, but also reduces availability because
@@ -49,38 +51,35 @@ could be compromised.
 
 `psst` provides a different trade-off:
 
-- **`psst` security:** `psst` improves security because malicious people need to
-  obtain two of the shares. This can be significantly harder than accessing
-  a single secret.
+- **`psst` security:** `psst` improves security, because malicious actors need
+  to obtain two of the shares. This can be significantly harder than accessing a
+  single secret.
 
-  Note, however, that `psst` still has single points of failure: two shares must
-  be present at the time when the secret is split and when it is recovered, so
-  these moments remain critical. Also, once the secret is to be used, it
-  probably needs to be entered into some electronic device which could contain
-  malware or otherwise be compromised.
+  Note, however, that `psst` still has single points of failure: the full secret
+  is present when it is being split and when it is being recovered, so these
+  moments remain critical. Also, once the secret is to be used, it probably
+  needs to be entered into some electronic device, which could contain malware
+  or otherwise be compromised.
 
-- **`psst` availability:** `psst` improves availability because users can more
-  safely create multiple copies of their shares. Social recovery becomes easier.
-  Shares can be given to trusted people along with instructions that explain
-  what to do in an emergency or if the original owner dies.
+- **`psst` availability:** `psst` improves availability, because users can more
+  safely create multiple copies of their shares.
 
   Note, however, that `psst` adds complexity and introduces more opportunities
   for errors. If `psst` is used incorrectly, shares might contain the wrong data
   and the secret might be lost.
 
-Before using `psst`, users should carefully consider what their security and
-availability risks are, and whether `psst` provides a better trade-off than
-their existing solution. Please also read about [alternatives](#alternatives)
-below.
+Before using `psst`, users should carefully consider their needs and risks with
+respect to security and availability. Please evaluate whether `psst` really
+provides a better trade-off than the existing solution. Please also read about
+[alternatives](#alternatives) below.
 
-### Design choices
+## Design choices
 
 When designing `psst`, we wanted to create an implementation of Shamir's Secret
 Sharing Scheme that is as simple, easy to use, and easy to understand as
-possible. This ensures that recovery is possible even though the world might
+possible. This ensures that recovery is possible, even though the world might
 have changed since the shares were created. It makes the system applicable to
-many use-cases. It avoids vendor lock-in and dependence on proprietary
-solutions.
+many use-cases. It avoids vendor lock-in and proprietary solutions.
 
 We quickly realized that any full implementation of Shamir's Secret Sharing is
 too complex for these goals. Implementations face a number of subtle choices:
@@ -89,106 +88,152 @@ use, etc. Most alternative implementations add encryption, checksums,
 verifiability for shares and secrets, and other features. While these can
 improve security and usability, they also increase the system's complexity.
 
-- Why GF(5)?
-- Why not a smaller field for even more simplicity?
-- If dice are so cool, why not GF(6)?
-- Why is there no checksum?
-- Why 2-of-4?
-- Why merge j and x?
-- Why pad with q?
+In the rest of this section, we explain the considerations that went into the
+design of `psst`.
 
-TODO: explain why each feature was chosen
+### Why use the GF(5) finite field?
 
-- Don't add a checksum
+The mathematics of Shamir's Secret Sharing need a finite field to work in.
+Essentially, that is a set of elements with operations for addition,
+subtraction, multiplication, and division.
 
-- Add a checksum
+The field needs to be large enough for the desired number of shares: a field of
+size _n_ allows a maximum of _n - 1_ shares. On the other hand, the field should
+be as small as possible, because this simplifies the implementation: one can
+explicitly write down all the _n²_ possible combinations of share values.
 
-  - TODO: unsure how this would work. I don't want to use a parity byte or
-    Fletcher's Checksum, since these are linear => easy to predict how a change
-    to a share affects the checksum.
-  - Add the check values for each byte to obtain the checksum _s_
-  - The four checksum bytes are `s % 251`, `s % 241`, `s % 239`, and `s % 233`
+Size five worked perfectly for the authors because they find that four shares
+are enough, and the 25 combinations fit easily on a single page of paper. There
+are additional advantages:
 
-- No XOR: it only supports 2-of-2 or 3-of-3... It hides a number of tricky
-  design choices, such as how to encode letters of the alphabet.
+- Combinations of two digits map quite naturally to the latin alphabet.
+- It is easy to choose a random digit using a dice.
 
-### Alternatives
+**If dice are so cool, why not use GF(6)?** Unfortunately, there is no GF(6).
+All finite fields have a size that is a power of a prime number. There are
+fields of size 2, 3, 4, 5, 7, 8, 9, ..., but not 6.
+
+**How about schemes based on XOR?** XOR is a relatively simple operation that
+can be performed without a computer. XOR-based secret sharing schemes are
+equivalent to Shamir's Secret Sharing in GF(2). They have a few shortcomings
+compared to `psst`:
+
+- XOR-based schemes can only support _n_-of-_n_ schemes, for example 2-of-2. If
+  any of the shares is lost, the secret cannot be recovered.
+- There are subtle design questions, such as how to encode letters and numbers.
+- It is not obvious how to obtain randomness.
+
+### Why focus on 2-of-4 secret sharing?
+
+We want a threshold of two because of our primary goal: to eliminate a single
+point of failure.
+
+It is in principle possible to use `psst` in a 3-of-4 setting. There would be
+125 possible combinations, namely all polygons _ax² + bx + c_ over GF(5), and
+users would need two dice throws to choose a polygon for each secret digit.
+However, we advise against that. If users cannot tolerate the compromise of one
+share, they would be better advised to use a multisig scheme or similar
+technique.
+
+Similarly, if user need more than four shares, it seems wiser to not rely on
+secret sharing, and use one of the [alternatives](#alternatives).
+
+### Encoding text (a-z)
+
+Our choice of GF(5) allows for a compact representation of the latin alphabet
+(a-z) with two digits per letter, except that there are only 25 two-digit
+combinations for 26 letters. We chose to solve this by merging the two letters
+`j` and `x`; they are both assigned to the combination `44`.
+
+We made this choice after analyzing letter frequencies and usage in the
+[BIP-39 English wordlist](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt).
+Both `j` and `x` are among the rarest letters. Replacing one with the other
+never causes confusion between two words, even if we only consider the first
+four letters of each word.
+
+Moreover, `j` and `x` tend to occupy different positions, so that they can be
+disambiguated using the following rules:
+
+- A `44` in first position must be `j` (e.g., "?uice" is "juice")
+- A `44` in second position must be `x` (e.g., "e?act" is "exact")
+- A `44` in fourth position must be `j`
+- A `44` in fifth or sixth position must be `x`
+
+In third position, the combination `44` is `x` in 13 of 20 cases.
+
+We also recommend to pad short words with `q`. It is the rarest letter and is
+always followed by `u` in actual usage. This means that one or more `q` at the
+end of the word are unambiguously padding.
+
+### Checksums and verification
+
+`psst` deliberately does not have a built-in checksum or other means to verify
+that a secret was recovered correctly, unlike most
+[alternative implementations](#alternatives) of Shamir's Secret Sharing.
+
+This follows from `psst`s goal of maximum simplicity. Even simple checksums are
+tedious to compute by hand. Moreover, the secrets often have some built-in
+redundancy. For example, a BIP-39 seed phrase must contain valid words from the
+wordlist and has a built-in checksum.
+
+Users can often manually add redundancy to the secret. For example, a simple
+secret such as a PIN number can be repeated three times. In this spirit, the
+`psst` worksheet recommends using more than the minimum four first letters for
+BIP-39 words. The probability that a single-letter change would cause a word to
+change into another valid word decreases rapidly as more letters are used:
+
+- With 4 letters, the probability of word change is 5.12%
+- With 5 letters: the probability of word change is 0.74%
+- With 6 letters, the probability of word change is 0.49%
+
+## Where and how to store shares?
+
+How to store shares is up to you, the user! It is a complex question for which
+we provide only minimal guidance here. The main recommendation is to store
+shares in different physical locations; otherwise, there is again a single point
+of failure, and not much is gained by using `psst`.
+
+An important consideration is whether to give shares to other people, or to
+store them in locations that only you have access to. By involving other people,
+you can potentially increase the availability of shares. You can give
+instructions for what to do with shares in emergencies or when you die.
+
+That said, involving other people also puts trust and responsability on them. It
+might put people at risk. In extreme cases, they might get robbed or kidnapped
+by people who want to obtain the secret share. Please follow `psst`s principle
+to only include people who have fun participating.
+
+## Alternatives
 
 A number of other implementations if Shamir's Secret Sharing exist:
 
 - [SLIP-0039](https://github.com/satoshilabs/slips/blob/master/slip-0039.md)
+  is a scheme for hardware wallet seeds, supported by Trezor.
 - [SSKR](https://github.com/BlockchainCommons/Research/blob/master/papers/bcr-2020-011-sskr.md)
-- [EIP 3450](https://eips.ethereum.org/EIPS/eip-3450)
-- The [ssss](http://point-at-infinity.org/ssss/) Unix utility
+  is a generic crypto-focused scheme.
+- [EIP 3450](https://eips.ethereum.org/EIPS/eip-3450) is an unfinished proposal
+  focusing on BIP-39 seeds.
+- [ssss](http://point-at-infinity.org/ssss/) is a Unix utility.
 
-For many use cases, it is better to avoid secret sharing altogether. For example, to securely store cryptocurrency, a multisig scheme has advantages. For a detailed discussion, refer to [CasaBlog: Shamir's Secret Sharing Shortcomings](https://blog.keys.casa/shamirs-secret-sharing-security-shortcomings/).
+[SeedXOR](https://seedxor.com/) is a scheme that can be implemented using pen
+and paper, like `psst`. The main difference is that it only supports _n_-of-_n_
+schemes, for example 2-of-2. If even one share is lost, the secret cannot be
+recovered.
 
-For a good overview of considerations for storing secrets, see [How to Back Up a Seed Phrase](https://blog.lopp.net/how-to-back-up-a-seed-phrase/).
+For many use cases, it is better to avoid secret sharing altogether. For
+example, to securely store cryptocurrency, a multisig scheme has advantages. For
+a detailed discussion, refer to
+[CasaBlog: Shamir's Secret Sharing Shortcomings](https://blog.keys.casa/shamirs-secret-sharing-security-shortcomings/).
 
-## Implementation
+For a good overview of considerations for storing secrets, see
+[How to Back Up a Seed Phrase](https://blog.lopp.net/how-to-back-up-a-seed-phrase/).
 
-### Splitting a secret into shares
+## Acknowledgements
 
-- Encode the secret _s_ as bytes
-  - It could already be in hexadecimal form or bytewords
-  - Users can use the provided ASCII table
-  - For BIP-39 mnemonics, users can use the first four letters of each word and
-    encode them as ASCII.
-- Obtain a series of random bytes _r_, of the same length as the secret
-- For each byte, compute _x_ the XOR (addition modulo 256) of the secret _si_
-  and the corresponding random byte _ri_.
-- The first share is _r_.
-- The second share is _x_.
+`psst` was started by [Sjlver](https://github.com/Sjlver) and builds on the
+thinking of many others.
 
-Final length of a share for a 24-word BIP-39 mnemonic: 24 \* 4 = 96 bytewords.
+If you have fun using `psst`, you can send a tip:
 
-For offline randomness, can use 2 d20 (one for the row and one for the column of
-a 16x16 grid) to generate _r_. That said, it's easier to generate the _r_ share
-on a computer and print it (or store it in one or more safe digital places).
-
-Recommend to create papers with instructions and space to write the secret.
-Paper should be folded, then labeled, then the outermost layer cut, then sealed.
-
-TODO: instructions on how to label shares.
-
-## Outdated ideas
-
-At its core, it is an implementation of Shamir's Secret Sharing with a strong
-emphasis on recovery. `psst` produces paper documents ("shares") that contain
-information about a secret, such that _k_ shares together can recover the
-secret. `psst` shares are self-contained, containing all information needed to
-perform the recovery procedure. At the same time, `psst` shares are secure in
-the sense that someone with access to fewer than _k_ shares learns nothing about
-the secret.
-
-## psst encoding and decoding
-
-`psst` is designed for short inputs such as passwords or cryptographic seeds.
-These can contain up to 45 bytes of binary data.
-
-Encoding proceeds as follows:
-
-1. Encode the input _x_ with a variant of `bech32m`. This produces a number _b_
-   in base 32. The number includes a checksum, which serves to check whether a
-   secret has been successfully recovered.
-   - The `bech32m` operation uses "psstx" as human-readable part. This is
-     relevant for computing the checksum.
-   - The number _b_ is the data part (including checksum but excluding the
-     human-readable part) produced by `bech32m`.
-2. Split _b_ into shares _s1_ ... _sn_ using an implementation of Shamir's
-   Secret Sharing that works in the finite field GF(32) with primitive
-   polynomial `x**5 + x**2 + 1`. Each digit of _b_ is shared separately.
-3. Encode the shares (again) in `bech32m`. This produces output shares in the
-   following format:
-   - The human-readable part "psst" followed by the separator "1"
-   - 1 character (5 bits of data) for the share number
-   - The actual share _si_, 0 to 79 characters
-   - 6 characters for the checksum
-
-## Rationale
-
-- **Why not include a version number?** `psst` shares are intended to be stored
-  along with sufficient documentation for how to recover them. Even if there are
-  multiple versions of `psst`, a share can be recovered with the help of that
-  documentation. If all else fails, multiple recovery procedures can be tried in
-  sequence until one is found for which all checksum checks pass.
+- Bitcoin: `bc1q3hnhtgrse3etk52m626zxrkz0hah8hkag4et38`
+- Ethereum: `0xAF16c970cb2329E9c3B8f4E54e1e8580937f8406`
