@@ -6,7 +6,9 @@ reveals nothing about the secret (except its length). Any two parts combined
 allow the secret to be restored.
 
 The main goal of `psst` is simplicity. It is a system that can be used with just
-pen, paper and a six-sided dice.
+pen, paper and a six-sided dice. `psst` is great for people who want to deeply
+understand what they do and verify every step, and for anyone who has fun with
+information theory and cryptography.
 
 `psst` is a restricted case of
 [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_secret_sharing),
