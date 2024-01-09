@@ -18,9 +18,11 @@ choice.
 
 ## How to use `psst`?
 
-1. Download the [`psst` PDF (A4 paper)](docs/psst-worksheet.pdf).
-2. Print the PDF.
-3. Follow the instructions on the printed PDF.
+1. Download the `psst` worksheet: \
+   [`psst` PDF (A4 paper)](docs/psst-worksheet.pdf) \
+   [`psst` PDF (US Letter)](docs/psst-worksheet-usletter.pdf)
+2. Print the worksheet.
+3. Follow the instructions on the printed worksheet.
 
 ## Find out more
 
