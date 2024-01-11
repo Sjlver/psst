@@ -111,3 +111,7 @@ change into another valid word decreases rapidly as more letters are used:
 - With 4 letters, the probability of word change is 5.12%
 - With 5 letters: the probability of word change is 0.74%
 - With 6 letters, the probability of word change is 0.49%
+
+---
+
+Up: [README](../README.md) | Next: [What Can Go Wrong?](what-can-go-wrong.md)

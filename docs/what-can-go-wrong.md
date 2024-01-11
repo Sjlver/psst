@@ -1,4 +1,4 @@
-## What can go wrong?
+## What Can Go Wrong?
 
 This document describes scenarios where using `psst` leaks information about the secret. While `psst` is secure if used correctly, there are subtle difficulties and outright attacks.
 
@@ -121,3 +121,7 @@ predict."
 
 This approach is not safe at all, because the app could transmit the secret to
 Mallory. Mallory does not even need to see any of the shares.
+
+---
+
+Up: [README](../README.md) | Next: [Storing Shares](storing-shares.md)

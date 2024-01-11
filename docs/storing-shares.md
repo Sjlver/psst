@@ -14,3 +14,7 @@ That said, involving other people also puts trust and responsability on them. It
 might put people at risk. In extreme cases, they might get robbed or kidnapped
 by people who want to obtain the secret share. Please follow `psst`s principle
 to only include people who have fun participating.
+
+---
+
+Up: [README](../README.md)

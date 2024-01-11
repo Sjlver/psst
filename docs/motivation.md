@@ -50,3 +50,7 @@ Before using `psst`, users should carefully consider their needs and risks with
 respect to security and availability. Please evaluate whether `psst` really
 provides a better trade-off than the existing solution. Please also read about
 [alternatives](../README.md#alternatives).
+
+---
+
+Up: [README](../README.md) | Next: [Design Choices](design-choices.md)
