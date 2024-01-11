@@ -40,6 +40,10 @@ ways of using `psst`, and potential attacks against its users.
 consider after someone has used `psst`, when they need a place to store their
 secret shares.
 
+The page [Supplemental Materials](docs/supplemental-materials.md) contains
+tables that might be useful for some use cases, but did not fit onto the
+worksheet.
+
 ## Alternatives
 
 A number of other implementations if Shamir's Secret Sharing exist:
