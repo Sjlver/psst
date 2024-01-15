@@ -56,10 +56,14 @@ A number of other implementations if Shamir's Secret Sharing exist:
   focusing on BIP-39 seeds.
 - [ssss](http://point-at-infinity.org/ssss/) is a Unix utility.
 
-[SeedXOR](https://seedxor.com/) is a scheme that can be implemented using pen
-and paper, like `psst`. The main difference is that it only supports _n_-of-_n_
-schemes, for example 2-of-2. If even one share is lost, the secret cannot be
-recovered.
+[Codex32](https://www.secretcodex32.com/) is another pen-and-paper method for
+storing secrets. Compared to `psst`, it has more features (for example, it
+includes a checksum) and requires more time. People who like pen-and-paper
+computation will find Codex32's volvelle wheels interesting.
+
+[SeedXOR](https://seedxor.com/) is a scheme that can be computed manually, like
+`psst`. The main difference is that it only supports _n_-of-_n_ schemes, for
+example 2-of-2. If even one share is lost, the secret cannot be recovered.
 
 BIP-39 Split Mnemonic is a simple 2-of-3 scheme implemented in
 [Ian Coleman's BIP-39 tool](https://iancoleman.io/bip39/). It generates three
